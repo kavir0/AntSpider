@@ -11,6 +11,7 @@ import re
 import random
 import codecs
 from urllib import parse
+import json
  
  
 class ProxyTool(object):
@@ -67,6 +68,7 @@ class ProxyTool(object):
         return user_agent
  
  
+    # 在此改代码
     def get_proxy(self, choice='http', first=1, end=2):
         """
         获取代理
@@ -76,22 +78,39 @@ class ProxyTool(object):
         :return:
         """
  
-        ip_list = []
-        base_url = None
-        if choice == 'http':
-            base_url = 'http://www.xicidaili.com/wt/'
-        elif choice == 'https':
-            base_url = 'http://www.xicidaili.com/wn/'
+        # ip_list = []
+        # base_url = None
+        # if choice == 'http':
+        #     base_url = 'http://www.xicidaili.com/wt/'
+        # elif choice == 'https':
+        #     base_url = 'http://www.xicidaili.com/wn/'
  
-        for n in range(first, end):
-            actual_url = base_url + str(n)
-            html = requests.get(url=actual_url, headers=self.headers).text
-            pattern = '(\d+\.\d+\.\d+\.\d+)</td>\s*<td>(\d+)'
-            re_list = re.findall(pattern, html)
+        # for n in range(first, end):
+        #     actual_url = base_url + str(n)
+        #     html = requests.get(url=actual_url, headers=self.headers).text
+        #     pattern = '(\d+\.\d+\.\d+\.\d+)</td>\s*<td>(\d+)'
+        #     re_list = re.findall(pattern, html)
  
-            for ip_port in re_list:
-                ip_port = ip_port[0] + ':' + ip_port[1]
-                ip_list.append(ip_port)
+        #     for ip_port in re_list:
+        #         ip_port = ip_port[0] + ':' + ip_port[1]
+        #         ip_list.append(ip_port)
+        # return ip_list
+
+        # 拿数据，并通过处理得到代理ip
+        ip_list=[]
+        headers = {"User-Agent": "Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11"}
+        base_url = 'http://proxylist.fatezero.org/proxy.list#'
+        html = requests.get(url=base_url, headers=headers).text
+        data_list = html.split("}")
+        data_str = ''
+        for i in range(len(data_list)-1):
+            data_str = '{}{}'.format(data_list[i],"}")
+            data = json.loads(data_str)
+            protocol=data['type']
+            # host_port=data['host']+":"+data['port']
+            host_port='{}:{}'.format(data['host'],data['port'])
+            data_dict={"type":protocol, "address":host_port}
+            ip_list.append(data_dict)
         return ip_list
  
  
