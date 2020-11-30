@@ -75,24 +75,42 @@ class ProxyTool(object):
         :param end: 结束爬取的后一页
         :return:
         """
+
+        # --previous--
+        # ip_list = []
+        # base_url = None
+        # if choice == 'http':
+        #     base_url = 'http://www.xicidaili.com/wt/'
+        # elif choice == 'https':
+        #     base_url = 'http://www.xicidaili.com/wn/'
  
-        ip_list = []
-        base_url = None
-        if choice == 'http':
-            base_url = 'http://www.xicidaili.com/wt/'
-        elif choice == 'https':
-            base_url = 'http://www.xicidaili.com/wn/'
+        # for n in range(first, end):
+        #     actual_url = base_url + str(n)
+        #     html = requests.get(url=actual_url, headers=self.headers).text
+        #     pattern = '(\d+\.\d+\.\d+\.\d+)</td>\s*<td>(\d+)'
+        #     re_list = re.findall(pattern, html)
  
-        for n in range(first, end):
-            actual_url = base_url + str(n)
-            html = requests.get(url=actual_url, headers=self.headers).text
-            pattern = '(\d+\.\d+\.\d+\.\d+)</td>\s*<td>(\d+)'
-            re_list = re.findall(pattern, html)
- 
-            for ip_port in re_list:
-                ip_port = ip_port[0] + ':' + ip_port[1]
-                ip_list.append(ip_port)
-        return ip_list
+        #     for ip_port in re_list:
+        #         ip_port = ip_port[0] + ':' + ip_port[1]
+        #         ip_list.append(ip_port)
+        # return ip_list
+
+        list_all = []
+        base_url = 'http://proxylist.fatezero.org/proxy.list#'
+        html = requests.get(url=base_url, headers=self.headers).text
+        data_list = html.split("}")
+        data_str = ''
+        for i in range(len(data_list)-1):
+            data_str = '{}{}'.format(data_list[i],"}")
+            data = json.loads(data_str)
+            # protocol=data['type']
+            host_port='{}:{}'.format(data['host'],data['port'])
+            # data_dict={"type":protocol, "address":host_port}
+            # list_all.append(data_dict)
+            
+            list_all.append(host_port)
+        return list_all
+
  
  
     def test_proxy(self, ip_port, choice='http'):
@@ -155,7 +173,7 @@ def check_ip_valid(ip):
 
 
 if __name__ == "__main__":
-    with open("proxy.txt") as fr:
+    with open("proxy.txt", "r") as fr:
         ip_list = fr.readlines()
         
     ip_list = [ip.strip() for ip in ip_list]
@@ -163,9 +181,15 @@ if __name__ == "__main__":
     proxy = ProxyTool()
     ip_list = proxy.get_proxy()
     good_ip = []
+    insert_ip_sql = []
     for ip in ip_list:
         print("Start to test ip:", ip)
         ip_test_res = proxy.test_proxy(ip)
         if ip_test_res:
             print("Yes:", ip)
-            good_ip.append(ip)
+            # good_ip.append(ip)
+            string = '(\"'+ip+'\",\"1\",\"0\"'+')'
+            insert_ip_sql.append(string)
+            # print("insert_ip_sql",insert_ip_sql)
+    sql = 'INSERT INTO proxys (proxy_ip, valid, call_times) VALUES %s' %(','.join(insert_ip_sql))
+    print(sql)
