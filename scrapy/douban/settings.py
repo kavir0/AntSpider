@@ -42,7 +42,7 @@ DOWNLOAD_TIMEOUT = 10
 # 不用代理池注释这条（1/2）
 # 默认的全局并发限制不适合并发爬取多domain
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-# CONCURRENT_REQUESTS = 500
+CONCURRENT_REQUESTS = 500
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -81,7 +81,7 @@ SPIDER_MIDDLEWARES = {
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html   UAER-AGENT
 DOWNLOADER_MIDDLEWARES = {
     # 不用代理池注释这条（2/2）
-    # 'douban.middlewares.ProxyMiddleware': 400,
+    'douban.middlewares.ProxyMiddleware': 400,
     'douban.middlewares.RandomUserAgentMiddleware':543,
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     'scrapy.spidermiddlewares.depth.DepthMiddleware': 900,

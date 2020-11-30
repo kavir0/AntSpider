@@ -10,6 +10,7 @@ import random
 import string
 import requests
 import json
+import time
 
 from douban.items import Subject
 
@@ -20,6 +21,8 @@ from scrapy.spiders import CrawlSpider, Request, Rule
 class MovieSubjectSpider(CrawlSpider):
     name = 'movie_subject'
     allowed_domains = ['m.douban.com', 'movie.douban.com']
+    # start_urls = ['https://movie.douban.com/cinema/nowplaying/beijing/',
+    #               'https://movie.douban.com/subject/19899707/']
     start_urls = ['https://movie.douban.com/cinema/nowplaying/beijing/',
                   'https://movie.douban.com/subject/19899707/']
 
@@ -96,5 +99,11 @@ class MovieSubjectSpider(CrawlSpider):
         subject = Subject()
         self.get_douban_id(subject, response)
         subject['type'] = 'movie'
-        print("\nChange User-Agent: ", response.request.headers['User-Agent'])
+        # print("\nChange User-Agent: ", response.request.headers['User-Agent'])
+        time.sleep(random(0,2))
         return subject
+
+'''
+    mac 指定使用python3的scrapy包
+    python3 -m scrapy crawl movie_subject
+'''

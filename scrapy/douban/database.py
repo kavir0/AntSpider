@@ -12,7 +12,7 @@ MYSQL_DB = 'douban'
 MYSQL_USER = 'root'
 MYSQL_PASS = '123456'
 MYSQL_HOST = 'localhost'
-MYSQL_PORT = 3307
+MYSQL_PORT = 3306
 
 connection = pymysql.connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER,
                              password=MYSQL_PASS, db=MYSQL_DB,

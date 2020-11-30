@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Jul 30 23:41:38 2019
-
-@author: liudiwei
-"""
 
 import requests
 import re
 import random
 import codecs
 from urllib import parse
- 
+# import database as db
+import sys
+sys.path.append(r'/Users/Kavin/Desktop/spiderGitMac/scrapy/douban') 
+import database as db
  
 class ProxyTool(object):
     """
@@ -68,47 +66,36 @@ class ProxyTool(object):
  
  
     def get_proxy(self, choice='http', first=1, end=2):
-        """
-        获取代理
-        :param choice:
-        :param first: 开始爬取的页数
-        :param end: 结束爬取的后一页
-        :return:
-        """
-
-        # --previous--
-        # ip_list = []
-        # base_url = None
-        # if choice == 'http':
-        #     base_url = 'http://www.xicidaili.com/wt/'
-        # elif choice == 'https':
-        #     base_url = 'http://www.xicidaili.com/wn/'
- 
-        # for n in range(first, end):
-        #     actual_url = base_url + str(n)
-        #     html = requests.get(url=actual_url, headers=self.headers).text
-        #     pattern = '(\d+\.\d+\.\d+\.\d+)</td>\s*<td>(\d+)'
-        #     re_list = re.findall(pattern, html)
- 
-        #     for ip_port in re_list:
-        #         ip_port = ip_port[0] + ':' + ip_port[1]
-        #         ip_list.append(ip_port)
-        # return ip_list
 
         list_all = []
-        base_url = 'http://proxylist.fatezero.org/proxy.list#'
-        html = requests.get(url=base_url, headers=self.headers).text
-        data_list = html.split("}")
-        data_str = ''
-        for i in range(len(data_list)-1):
-            data_str = '{}{}'.format(data_list[i],"}")
-            data = json.loads(data_str)
-            # protocol=data['type']
-            host_port='{}:{}'.format(data['host'],data['port'])
-            # data_dict={"type":protocol, "address":host_port}
-            # list_all.append(data_dict)
-            
-            list_all.append(host_port)
+
+        # fatezero获取免费代理
+        # base_url = 'http://proxylist.fatezero.org/proxy.list#'
+        # html = requests.get(url=base_url, headers=self.headers).text
+        # data_list = html.split("}")
+        # data_str = ''
+        # for i in range(len(data_list)-1):
+        #     data_str = '{}{}'.format(data_list[i],"}")
+        #     data = json.loads(data_str)
+        #     host_port='{}://{}:{}'.format(data['type'],data['host'],data['port'])     
+        #     list_all.append(host_port)
+
+     
+        # base_url = 'http://1233926448200199904.standard.hutoudaili.com/?num=300'
+        # base_url = 'http://www.66ip.cn/mo.php?sxb=&tqsl=200&port=&export=&ktip=&sxa=&submit=%CC%E1++%C8%A1&textarea=http%3A%2F%2Fwww.66ip.cn%2F%3Fsxb%3D%26tqsl%3D200%26ports%255B%255D2%3D%26ktip%3D%26sxa%3D%26radio%3Dradio%26submit%3D%25CC%25E1%2B%2B%25C8%25A1'
+        base_url = 'http://dev.qydailiip.com/api/?apikey=7304cf3b1e0e0789605187acdef1a0368751c2ac&num=100&type=text&line=mac&proxy_type=putong&sort=1&model=all&protocol=http&address=&kill_address=&port=&kill_port=&today=false&abroad=&isp=&anonymity='
+        html = requests.get(url=base_url).text
+        list_without_protocal = str.split(html)
+        for i in range(len(list_without_protocal)):
+            list_all.append(("http://"+str(list_without_protocal[i])))
+        
+        # base_url = 'http://122.51.7.207:5010/get_all/'
+        # re = requests.get(url=base_url).text
+        # re_list = json.loads(re)
+        # for i in range(len(re_list)-1):
+        #     host_port='http://{}'.format(re_list[i]['proxy'])
+        #     list_all.append(host_port) 
+
         return list_all
 
  
@@ -125,19 +112,16 @@ class ProxyTool(object):
         tar_url = "http://icanhazip.com/"
         user_agent = self.get_user_agent()
         headers = {'User-Agent': user_agent}
-        if choice == 'http':
-            proxies = {
-                "http": "http://"+ip_port,
-            }
- 
-        elif choice == 'https':
-            proxies = {
-                "https": "https://" + ip_port,
-            }
+        
         try:
-            thisIP = "".join(ip_port.split(":")[0:1])
-            res = requests.get(tar_url, proxies=proxies, headers=headers, timeout=8)
+            protocol = "".join(ip_port.split(":")[0:1])
+            thisIP = "".join(ip_port.split(":")[1:2])
+            thisIP = thisIP[2:]
+            proxies = {protocol: thisIP}
+            res = requests.get(tar_url, proxies=proxies, headers=headers, timeout=0.5)
             proxyIP = res.text.strip()
+            # print('proxyIP : ',proxyIP)
+            # print('thisIP :', thisIP)
             if proxyIP == thisIP:
                 return proxyIP
             else:
@@ -173,12 +157,12 @@ def check_ip_valid(ip):
 
 
 if __name__ == "__main__":
-    with open("proxy.txt", "r") as fr:
-        ip_list = fr.readlines()
+    # with open("proxy.txt", "r") as fr:
+    #     ip_list = fr.readlines()
         
-    ip_list = [ip.strip() for ip in ip_list]
-    
+    # ip_list = [ip.strip() for ip in ip_list]
     proxy = ProxyTool()
+    print("start get proxy ==============>>")
     ip_list = proxy.get_proxy()
     good_ip = []
     insert_ip_sql = []
@@ -187,9 +171,17 @@ if __name__ == "__main__":
         ip_test_res = proxy.test_proxy(ip)
         if ip_test_res:
             print("Yes:", ip)
-            # good_ip.append(ip)
+            good_ip.append(ip)
             string = '(\"'+ip+'\",\"1\",\"0\"'+')'
             insert_ip_sql.append(string)
             # print("insert_ip_sql",insert_ip_sql)
-    sql = 'INSERT INTO proxys (proxy_ip, valid, call_times) VALUES %s' %(','.join(insert_ip_sql))
-    print(sql)
+    good_num = len(good_ip)
+    print("good ip : %s" % good_num)
+    print(good_ip)
+    if good_num != 0:
+        sql = 'INSERT INTO proxys (proxy_ip, valid, call_times) VALUES %s' %(','.join(insert_ip_sql))
+        # print(sql)
+        cursor = db.connection.cursor()
+        cursor.execute(sql)
+        db.connection.commit()
+        cursor.close()

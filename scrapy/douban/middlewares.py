@@ -163,24 +163,34 @@ class DepthMiddleware(object):
 
 class ProxyMiddleware(object):
     def process_request(self, request, spider):
+        valid_in_list = 0
+        while(valid_in_list == 0):
+            cursor = db.connection.cursor()
+            sql = "SELECT proxy_ip,call_times FROM proxys where valid = 1 order by call_times limit 2"
+            # print("\n\n###SQL:", sql)
+
+            cursor.execute(sql)
+            all_proxy = cursor.fetchall()
+            proxy_list = []
+            for proxy in all_proxy:
+                ip = proxy["proxy_ip"]
+                proxy_list.append(ip)  
+            proxy_ip = ""
         
-        # curl https://m.douban.com/book/subject/26628811/ -x http://127.0.0.1:8081
-        #request.meta['proxy'] = 'http://27.43.187.24:9999'
-        cursor = db.connection.cursor()
-        sql = "SELECT proxy_ip,call_times FROM proxys where valid = 1 order by call_times limit 2"
-        print("\n\n###SQL:", sql)
 
-        cursor.execute(sql)
-        all_proxy = cursor.fetchall()
-        proxy_list = []
-        for proxy in all_proxy:
-            ip = proxy["proxy_ip"]
-            proxy_list.append(ip)  
-
-        PROXY_LIST = proxy_list
-        #PROXY_LIST = get_proxy()
-        print("=======###PROXY INFO: ", len(PROXY_LIST), PROXY_LIST)
-        proxy_ip = random.choice(PROXY_LIST)
+            # PROXY_LIST = proxy_list
+            #PROXY_LIST = get_proxy()
+            # print("=======###PROXY INFO: ", len(PROXY_LIST), PROXY_LIST)
+            # proxy_ip = random.choice(PROXY_LIST)
+            for i in range(len(proxy_list)):
+                proxy_ip = proxy_list[i]
+                if proxy_tool.test_proxy == False:
+                    proxy_list.remove('%s' % (proxy_ip))
+                    sql_delete = 'DELETE FROM proxys WHERE proxy_ip = "%s"' % (proxy_ip)
+                    cursor.execute(sql_delete)
+                else:
+                    valid_in_list = 1
+                    break
 
         #将mysql调用次数+1
         sql = 'UPDATE proxys SET call_times=call_times+1 WHERE proxy_ip="%s"' % (proxy_ip)
@@ -188,22 +198,11 @@ class ProxyMiddleware(object):
         db.connection.commit()
         cursor.close()
 
-        # 设置代理的认证信息
-        #auth = base64.b64encode(bytes("136756895:g9zaye1k", 'utf-8'))
-        #request.headers['Proxy-Authorization'] = b'Basic ' + auth
-        #proxy_ip = "58.255.207.22:19783"
-        ##private proxy
-        if PRIVATE_PROXY:
-            # proxy = "http://136756895:g9zaye1k@" + proxy_ip
-            proxy = "http://" + proxy_ip
-        else:
-            proxy = "http://" + proxy_ip
+        # proxy = "http://" + proxy_ip
         spider.logger.info("\n==================proxy===================")
-        spider.logger.info("Switch proxy ip: %s"  % proxy)
+        spider.logger.info("Switch proxy ip: %s"  % proxy_ip)
+        request.meta['proxy'] = proxy_ip
 
-        request.meta['proxy'] = proxy
-
-        # request.meta['proxy'] = 'http://10.0.0.164:1080'
 
 class RandomUserAgentMiddleware(object):
     def process_request(self, request, spider):
