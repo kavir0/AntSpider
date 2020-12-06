@@ -6,10 +6,14 @@ import re
 import random
 import codecs
 from urllib import parse
+<<<<<<< HEAD
 # import database as db
 import sys
 sys.path.append(r'/Users/Kavin/Desktop/spiderGitMac/scrapy/douban') 
 import database as db
+=======
+ 
+>>>>>>> 9c77711b13627b1c51586532f20a48ad3342a429
  
 class ProxyTool(object):
     """
@@ -67,6 +71,7 @@ class ProxyTool(object):
  
     def get_proxy(self, choice='http', first=1, end=2):
 
+<<<<<<< HEAD
         list_all = []
 
         # fatezero获取免费代理
@@ -96,6 +101,41 @@ class ProxyTool(object):
         #     host_port='http://{}'.format(re_list[i]['proxy'])
         #     list_all.append(host_port) 
 
+=======
+        # --previous--
+        # ip_list = []
+        # base_url = None
+        # if choice == 'http':
+        #     base_url = 'http://www.xicidaili.com/wt/'
+        # elif choice == 'https':
+        #     base_url = 'http://www.xicidaili.com/wn/'
+ 
+        # for n in range(first, end):
+        #     actual_url = base_url + str(n)
+        #     html = requests.get(url=actual_url, headers=self.headers).text
+        #     pattern = '(\d+\.\d+\.\d+\.\d+)</td>\s*<td>(\d+)'
+        #     re_list = re.findall(pattern, html)
+ 
+        #     for ip_port in re_list:
+        #         ip_port = ip_port[0] + ':' + ip_port[1]
+        #         ip_list.append(ip_port)
+        # return ip_list
+
+        list_all = []
+        base_url = 'http://proxylist.fatezero.org/proxy.list#'
+        html = requests.get(url=base_url, headers=self.headers).text
+        data_list = html.split("}")
+        data_str = ''
+        for i in range(len(data_list)-1):
+            data_str = '{}{}'.format(data_list[i],"}")
+            data = json.loads(data_str)
+            # protocol=data['type']
+            host_port='{}:{}'.format(data['host'],data['port'])
+            # data_dict={"type":protocol, "address":host_port}
+            # list_all.append(data_dict)
+            
+            list_all.append(host_port)
+>>>>>>> 9c77711b13627b1c51586532f20a48ad3342a429
         return list_all
 
  
