@@ -151,66 +151,6 @@ class DoubanPipeline(object):
     
     
     # 重写方法
-    # def process_item(self, item, spider):
-    #     if isinstance(item, Subject):
-    #         '''
-    #         subject
-    #         '''
-    #         exist = self.get_subject(item)
-    #         if not exist:
-    #             self.save_subject(item)
-    #     elif isinstance(item, MovieMeta):
-    #         '''
-    #         meta
-    #         '''
-    #         exist = self.get_movie_meta(item)
-    #         if not exist:
-    #             try:
-    #                 self.save_movie_meta(item)
-    #             except Exception as e:
-    #                 print(item)
-    #                 print(e)
-    #         else:
-    #             self.update_movie_meta(item)
-    #     elif isinstance(item, BookMeta):
-    #         '''
-    #         meta
-    #         '''
-    #         exist = self.get_book_meta(item)
-    #         if not exist:
-    #             try:
-    #                 self.save_book_meta(item)
-    #             except Exception as e:
-    #                 print(item)
-    #                 print(e)
-    #         else:
-    #             self.update_book_meta(item)
-    #     elif isinstance(item, Comment):
-    #         '''
-    #         comment
-    #         '''
-    #         exist = self.get_comment(item)
-    #         if not exist:
-    #             try:
-    #                 self.save_comment(item)
-    #             except Exception as e:
-    #                 print(item)
-    #                 print(e)
-    #     elif isinstance(item, PersonMeta):
-    #         '''
-    #         person
-    #         '''
-    #         exist = self.get_person_meta(item)
-    #         if not exist:
-    #             try:
-    #                 self.save_person_meta(item)
-    #             except Exception as e:
-    #                 print(item)
-    #                 print(e)
-    #         else:
-    #             self.update_person_meta(item)
-    #     return item
-
     def process_item(self, item, spider):
         if isinstance(item, Subject):
             '''
@@ -232,7 +172,67 @@ class DoubanPipeline(object):
                     print(e)
             else:
                 self.update_movie_meta(item)
+        elif isinstance(item, BookMeta):
+            '''
+            meta
+            '''
+            exist = self.get_book_meta(item)
+            if not exist:
+                try:
+                    self.save_book_meta(item)
+                except Exception as e:
+                    print(item)
+                    print(e)
+            else:
+                self.update_book_meta(item)
+        elif isinstance(item, Comment):
+            '''
+            comment
+            '''
+            exist = self.get_comment(item)
+            if not exist:
+                try:
+                    self.save_comment(item)
+                except Exception as e:
+                    print(item)
+                    print(e)
+        elif isinstance(item, PersonMeta):
+            '''
+            person
+            '''
+            exist = self.get_person_meta(item)
+            if not exist:
+                try:
+                    self.save_person_meta(item)
+                except Exception as e:
+                    print(item)
+                    print(e)
+            else:
+                self.update_person_meta(item)
         return item
+
+    # def process_item(self, item, spider):
+    #     if isinstance(item, Subject):
+    #         '''
+    #         subject
+    #         '''
+    #         exist = self.get_subject(item)
+    #         if not exist:
+    #             self.save_subject(item)
+    #     elif isinstance(item, MovieMeta):
+    #         '''
+    #         meta
+    #         '''
+    #         exist = self.get_movie_meta(item)
+    #         if not exist:
+    #             try:
+    #                 self.save_movie_meta(item)
+    #             except Exception as e:
+    #                 print(item)
+    #                 print(e)
+    #         else:
+    #             self.update_movie_meta(item)
+    #     return item
 
 
 class CoverPipeline(ImagesPipeline):

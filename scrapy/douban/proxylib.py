@@ -6,14 +6,11 @@ import re
 import random
 import codecs
 from urllib import parse
-<<<<<<< HEAD
 # import database as db
 import sys
-sys.path.append(r'/Users/Kavin/Desktop/spiderGitMac/scrapy/douban') 
+# sys.path.append(r'/Users/Kavin/Desktop/spiderGitMac/scrapy/douban') 
+sys.path.append(r'F:\DoubanSpiderGit\scrapy\douban')
 import database as db
-=======
- 
->>>>>>> 9c77711b13627b1c51586532f20a48ad3342a429
  
 class ProxyTool(object):
     """
@@ -71,7 +68,6 @@ class ProxyTool(object):
  
     def get_proxy(self, choice='http', first=1, end=2):
 
-<<<<<<< HEAD
         list_all = []
 
         # fatezero获取免费代理
@@ -86,9 +82,9 @@ class ProxyTool(object):
         #     list_all.append(host_port)
 
      
-        # base_url = 'http://1233926448200199904.standard.hutoudaili.com/?num=300'
+        base_url = 'http://1233926448200199904.standard.hutoudaili.com/?num=300'
         # base_url = 'http://www.66ip.cn/mo.php?sxb=&tqsl=200&port=&export=&ktip=&sxa=&submit=%CC%E1++%C8%A1&textarea=http%3A%2F%2Fwww.66ip.cn%2F%3Fsxb%3D%26tqsl%3D200%26ports%255B%255D2%3D%26ktip%3D%26sxa%3D%26radio%3Dradio%26submit%3D%25CC%25E1%2B%2B%25C8%25A1'
-        base_url = 'http://dev.qydailiip.com/api/?apikey=7304cf3b1e0e0789605187acdef1a0368751c2ac&num=100&type=text&line=mac&proxy_type=putong&sort=1&model=all&protocol=http&address=&kill_address=&port=&kill_port=&today=false&abroad=&isp=&anonymity='
+        # base_url = 'http://dev.qydailiip.com/api/?apikey=7304cf3b1e0e0789605187acdef1a0368751c2ac&num=100&type=text&line=mac&proxy_type=putong&sort=1&model=all&protocol=http&address=&kill_address=&port=&kill_port=&today=false&abroad=&isp=&anonymity='
         html = requests.get(url=base_url).text
         list_without_protocal = str.split(html)
         for i in range(len(list_without_protocal)):
@@ -101,41 +97,6 @@ class ProxyTool(object):
         #     host_port='http://{}'.format(re_list[i]['proxy'])
         #     list_all.append(host_port) 
 
-=======
-        # --previous--
-        # ip_list = []
-        # base_url = None
-        # if choice == 'http':
-        #     base_url = 'http://www.xicidaili.com/wt/'
-        # elif choice == 'https':
-        #     base_url = 'http://www.xicidaili.com/wn/'
- 
-        # for n in range(first, end):
-        #     actual_url = base_url + str(n)
-        #     html = requests.get(url=actual_url, headers=self.headers).text
-        #     pattern = '(\d+\.\d+\.\d+\.\d+)</td>\s*<td>(\d+)'
-        #     re_list = re.findall(pattern, html)
- 
-        #     for ip_port in re_list:
-        #         ip_port = ip_port[0] + ':' + ip_port[1]
-        #         ip_list.append(ip_port)
-        # return ip_list
-
-        list_all = []
-        base_url = 'http://proxylist.fatezero.org/proxy.list#'
-        html = requests.get(url=base_url, headers=self.headers).text
-        data_list = html.split("}")
-        data_str = ''
-        for i in range(len(data_list)-1):
-            data_str = '{}{}'.format(data_list[i],"}")
-            data = json.loads(data_str)
-            # protocol=data['type']
-            host_port='{}:{}'.format(data['host'],data['port'])
-            # data_dict={"type":protocol, "address":host_port}
-            # list_all.append(data_dict)
-            
-            list_all.append(host_port)
->>>>>>> 9c77711b13627b1c51586532f20a48ad3342a429
         return list_all
 
  

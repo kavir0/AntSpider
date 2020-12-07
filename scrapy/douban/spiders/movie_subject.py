@@ -23,8 +23,11 @@ class MovieSubjectSpider(CrawlSpider):
     allowed_domains = ['m.douban.com', 'movie.douban.com']
     # start_urls = ['https://movie.douban.com/cinema/nowplaying/beijing/',
     #               'https://movie.douban.com/subject/19899707/']
-    start_urls = ['https://movie.douban.com/cinema/nowplaying/beijing/',
-                  'https://movie.douban.com/subject/19899707/']
+    # start_urls = ['https://movie.douban.com/cinema/nowplaying/beijing/',
+                #   'https://movie.douban.com/subject/19899707/']
+                  
+    # start_urls = ['https://movie.douban.com/j/new_search_subjects?sort=R&range=0,10&tags=%E7%94%B5%E5%BD%B1&start={}'.format(number) for number in range(0,100000,20)]
+    start_urls = ['https://movie.douban.com/j/new_search_subjects?sort=R&range=0,10&tags=%E7%94%B5%E5%BD%B1&start={}'.format(number) for number in range(0,100,20)]
 
     """
     start_urls=[]
@@ -67,13 +70,13 @@ class MovieSubjectSpider(CrawlSpider):
                         print("douban_id duplicated.")
     """
 
-    rules = (
-        Rule(LinkExtractor(allow=('movie.douban.com/subject/(\d).*/')),
-             callback='parse_item', follow=True, process_request='cookie'),
+    # rules = (
+    #     Rule(LinkExtractor(allow=('movie.douban.com/subject/(\d).*/')),
+    #          callback='parse_item', follow=True, process_request='cookie'),
 
-        Rule(LinkExtractor(allow=('movie/subject/(\d).*rec$')),
-             callback='parse_item', follow=True, process_request='cookie'),
-    )
+    #     Rule(LinkExtractor(allow=('movie/subject/(\d).*rec$')),
+    #          callback='parse_item', follow=True, process_request='cookie'),
+    # )
 
     def cookie(self, request):
         bid = ''.join(random.choice(string.ascii_letters + string.digits) for
@@ -85,6 +88,7 @@ class MovieSubjectSpider(CrawlSpider):
     def start_requests(self):
         for url in self.start_urls:
             bid = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(11))
+            # time.sleep(random(0,4))
             yield Request(url, cookies={'bid': bid})
 
     def get_douban_id(self, subject, response):
@@ -100,7 +104,7 @@ class MovieSubjectSpider(CrawlSpider):
         self.get_douban_id(subject, response)
         subject['type'] = 'movie'
         # print("\nChange User-Agent: ", response.request.headers['User-Agent'])
-        time.sleep(random(0,2))
+        time.sleep(random(0,4))
         return subject
 
 '''
