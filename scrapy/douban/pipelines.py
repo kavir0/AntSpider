@@ -150,8 +150,9 @@ class DoubanPipeline(object):
         return db.connection.commit()
     
     
-    # 重写方法
+    # 项目框架会调用该方法
     def process_item(self, item, spider):
+        print("开始pipelines process_item() ==========>>>")
         if isinstance(item, Subject):
             '''
             subject

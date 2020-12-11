@@ -11,13 +11,19 @@
 
 import random
 from douban.util import AGENT_LIST
+import datetime
 
 BOT_NAME = 'douban'
 
 SPIDER_MODULES = ['douban.spiders']
 NEWSPIDER_MODULE = 'douban.spiders'
 
+# LOG_ENABLED = False
 LOG_LEVEL = 'DEBUG'
+# today = datetime.datetime.now()
+# LOG_FILE = 'mySpider.log'
+# log_file_path = 'log/scrapy_{}_{}_{}_{}_{}.log'.format(today.year, today.month, today.day, today.hour, today.minute)
+
 IMAGES_STORE = './storage/'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

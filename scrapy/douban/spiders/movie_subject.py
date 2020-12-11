@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Jul 30 23:41:38 2019
-
-@author: liudiwei
-"""
 
 import random
 import string
 import requests
 import json
 import time
+import logging
 
 from douban.items import Subject
 
@@ -27,7 +23,7 @@ class MovieSubjectSpider(CrawlSpider):
                 #   'https://movie.douban.com/subject/19899707/']
                   
     # start_urls = ['https://movie.douban.com/j/new_search_subjects?sort=R&range=0,10&tags=%E7%94%B5%E5%BD%B1&start={}'.format(number) for number in range(0,100000,20)]
-    start_urls = ['https://movie.douban.com/j/new_search_subjects?sort=R&range=0,10&tags=%E7%94%B5%E5%BD%B1&start={}'.format(number) for number in range(0,100,20)]
+    start_urls = ['https://movie.douban.com/j/new_search_subjects?sort=R&range=0,10&tags=%E7%94%B5%E5%BD%B1&start={}'.format(number) for number in range(0,40,20)]
 
     """
     start_urls=[]
@@ -105,6 +101,7 @@ class MovieSubjectSpider(CrawlSpider):
         subject['type'] = 'movie'
         # print("\nChange User-Agent: ", response.request.headers['User-Agent'])
         time.sleep(random(0,4))
+        logging.warning("爬取Subject() : (%s)" % subject)
         return subject
 
 '''
