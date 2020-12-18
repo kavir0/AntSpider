@@ -90,7 +90,12 @@ class MovieSubjectSpider(CrawlSpider):
     def get_douban_id(self, subject, response):
         print("\n\nresponse.url:", response.url)
 
-        subject['douban_id'] = response.url.split("subject")[1].split("/")[1]
+        # subject['douban_id'] = response.url.split("subject")[1].split("/")[1]
+        regx = '//*[@id="json"]/ul/li/div/ul/li/div/ul/li[9]/div/span[2]'
+        subject['douban_id'] = response.xpath(regx).extract()
+
+        #  TODO 此处返回的是list
+        #  TODO 解决该问题
         #subject['douban_id'] = response.url[35:-10]
         return subject
 

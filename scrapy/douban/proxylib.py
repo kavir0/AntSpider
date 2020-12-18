@@ -71,24 +71,24 @@ class ProxyTool(object):
         list_all = []
 
         # fatezero获取免费代理
-        # base_url = 'http://proxylist.fatezero.org/proxy.list#'
-        # html = requests.get(url=base_url, headers=self.headers).text
-        # data_list = html.split("}")
-        # data_str = ''
-        # for i in range(len(data_list)-1):
-        #     data_str = '{}{}'.format(data_list[i],"}")
-        #     data = json.loads(data_str)
-        #     host_port='{}://{}:{}'.format(data['type'],data['host'],data['port'])     
-        #     list_all.append(host_port)
+        base_url = 'http://proxylist.fatezero.org/proxy.list#'
+        html = requests.get(url=base_url, headers=self.headers).text
+        data_list = html.split("}")
+        data_str = ''
+        for i in range(len(data_list)-1):
+            data_str = '{}{}'.format(data_list[i],"}")
+            data = json.loads(data_str)
+            host_port='{}://{}:{}'.format(data['type'],data['host'],data['port'])
+            list_all.append(host_port)
 
      
-        base_url = 'http://1233926448200199904.standard.hutoudaili.com/?num=300'
-        # base_url = 'http://www.66ip.cn/mo.php?sxb=&tqsl=200&port=&export=&ktip=&sxa=&submit=%CC%E1++%C8%A1&textarea=http%3A%2F%2Fwww.66ip.cn%2F%3Fsxb%3D%26tqsl%3D200%26ports%255B%255D2%3D%26ktip%3D%26sxa%3D%26radio%3Dradio%26submit%3D%25CC%25E1%2B%2B%25C8%25A1'
-        # base_url = 'http://dev.qydailiip.com/api/?apikey=7304cf3b1e0e0789605187acdef1a0368751c2ac&num=100&type=text&line=mac&proxy_type=putong&sort=1&model=all&protocol=http&address=&kill_address=&port=&kill_port=&today=false&abroad=&isp=&anonymity='
-        html = requests.get(url=base_url).text
-        list_without_protocal = str.split(html)
-        for i in range(len(list_without_protocal)):
-            list_all.append(("http://"+str(list_without_protocal[i])))
+        # base_url = 'http://1233926448200199904.standard.hutoudaili.com/?num=300'
+        # # base_url = 'http://www.66ip.cn/mo.php?sxb=&tqsl=200&port=&export=&ktip=&sxa=&submit=%CC%E1++%C8%A1&textarea=http%3A%2F%2Fwww.66ip.cn%2F%3Fsxb%3D%26tqsl%3D200%26ports%255B%255D2%3D%26ktip%3D%26sxa%3D%26radio%3Dradio%26submit%3D%25CC%25E1%2B%2B%25C8%25A1'
+        # # base_url = 'http://dev.qydailiip.com/api/?apikey=7304cf3b1e0e0789605187acdef1a0368751c2ac&num=100&type=text&line=mac&proxy_type=putong&sort=1&model=all&protocol=http&address=&kill_address=&port=&kill_port=&today=false&abroad=&isp=&anonymity='
+        # html = requests.get(url=base_url).text
+        # list_without_protocal = str.split(html)
+        # for i in range(len(list_without_protocal)):
+        #     list_all.append(("http://"+str(list_without_protocal[i])))
         
         # base_url = 'http://122.51.7.207:5010/get_all/'
         # re = requests.get(url=base_url).text
